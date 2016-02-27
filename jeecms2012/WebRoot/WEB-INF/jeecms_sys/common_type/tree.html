@@ -1,0 +1,30 @@
+<#if isRoot>
+[{
+	"text": "<a href='v_list.do' target='rightFrame'><@s.m "commonType.root"/></a>",
+	"classes": "folder"
+	<#if list?size gt 0>,
+	"expanded": true,
+	"children": [
+	<#list list as commonType>
+		{
+		"id": "${commonType.id}",
+		"text": "<a href='<#if commonType.child?size gt 0>v_list.do?root=${commonType.id}<#else>v_edit.do?id=${commonType.id}</#if>' target='rightFrame'>${commonType.name}</a>",
+		"classes": "<#if commonType.child?size gt 0>folder<#else>file</#if>",
+		"hasChildren": <#if commonType.child?size gt 0>true<#else>false</#if>
+		}<#if commonType_has_next>,</#if>
+	</#list>
+	]
+	</#if>
+}]
+<#else>
+	[
+	<#list list as commonType>
+		{
+		"id": "${commonType.id}",
+		"text": "<a href='<#if commonType.child?size gt 0>v_list.do?root=${commonType.id}<#else>v_edit.do?id=${commonType.id}</#if>' target='rightFrame'>${commonType.name}</a>",
+		"classes": "<#if commonType.child?size gt 0>folder<#else>file</#if>",
+		"hasChildren": <#if commonType.child?size gt 0>true<#else>false</#if>
+		}<#if commonType_has_next>,</#if>
+	</#list>
+	]
+</#if>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	default-lazy-init="false">
+	<!-- --> 
+	<context:component-scan base-package="org.javacoo.expand.jeecms.service,org.javacoo.expand.jeecms.manager,org.javacoo.expand.jeecms.dao">
+	</context:component-scan>
+	
+	<!--service
+	<bean id="crawlerServiceImpl" class="org.javacoo.expand.jeecms.service.crawler.impl.CrawlerServiceImpl"/>
+	<bean id="crawlerPersistentImpl" class="org.javacoo.expand.jeecms.service.crawler.impl.CrawlerPersistentImpl"/>
+	<bean id="schedulerRuleSvcImpl" class="org.javacoo.expand.jeecms.service.scheduler.impl.SchedulerRuleSvcImpl"/>
+	<bean id="schedulerTaskManageSvcImpl" class="org.javacoo.expand.jeecms.service.scheduler.impl.SchedulerTaskManageSvcImpl"/>
+	-->
+	<!--manage
+	<bean id="commonTypeMngImpl" class="org.javacoo.expand.jeecms.manager.impl.CommonTypeMngImpl"/>
+	<bean id="historyMngImpl" class="org.javacoo.expand.jeecms.manager.impl.HistoryMngImpl"/>
+	<bean id="ruleMngImpl" class="org.javacoo.expand.jeecms.manager.impl.RuleMngImpl"/>
+	<bean id="schedulerMngImpl" class="org.javacoo.expand.jeecms.manager.impl.SchedulerMngImpl"/>
+	<bean id="tempMngImpl" class="org.javacoo.expand.jeecms.manager.impl.TempMngImpl"/>
+	-->
+	<!--DAO
+	<bean id="commonTypeDaoImpl" class="org.javacoo.expand.jeecms.dao.impl.CommonTypeDaoImpl"/>
+	<bean id="historyDaoImpl" class="org.javacoo.expand.jeecms.dao.impl.HistoryDaoImpl"/>
+	<bean id="ruleDaoImpl" class="org.javacoo.expand.jeecms.dao.impl.RuleDaoImpl"/>
+	<bean id="schedulerDaoImpl" class="org.javacoo.expand.jeecms.dao.impl.SchedulerDaoImpl"/>
+	<bean id="tempDaoImpl" class="org.javacoo.expand.jeecms.dao.impl.TempDaoImpl"/>
+	-->
+    <bean id="crawlerPersistentImpl" init-method="initUserList" class="org.javacoo.expand.jeecms.service.crawler.impl.CrawlerPersistentImpl"/>
+	<bean id="analyzer" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+	<!-- 爬虫参数配置 :configFilePath:相对于classpath-->
+	<bean id="crawlerConfig" class="org.javacoo.crawler.config.PropertiesCrawlerConfigImpl"
+		scope="singleton" init-method="loadCrawlerConfig">
+		<property name="configFilePath">
+			<value>crawler.properties</value>
+		</property>
+	</bean>
+	
+</beans>

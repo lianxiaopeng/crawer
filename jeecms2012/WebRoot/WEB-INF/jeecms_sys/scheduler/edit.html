@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title></title>
+<#include "/jeecms_sys/head.html"/>
+<script type="text/javascript">
+$.validator.methods.leafChannel = function(value, element, param) {
+	var i = element.selectedIndex;
+	return $(element.options[i]).attr("class")!="sel-disabled";
+};
+$(function() {
+	$("#jvForm").validate({
+		rules: {
+			channelId: {
+				required: true,
+				leafChannel: true
+			}
+		},
+		messages:{
+			channelId: {
+				leafChannel: "<@s.m "cmsAcquisition.error.notLeafChannel"/>"
+			}
+		}
+	});
+});
+</script>
+<style type="text/css">
+.sel-disabled{background-color:#ccc}
+</style>
+</head>
+<body>
+<div class="body-box">
+<div class="rhead">
+	<div class="rpos"><@s.m "global.position"/>:  <@s.m "cmsScheduler.acquisition.function"/> - <@s.m "global.edit"/></div>
+	<form class="ropt">
+		<input type="button" value="<@s.m "global.backToList"/>" onclick="history.back();"/>
+	</form>
+	<div class="clear"></div>
+</div>
+<@p.form id="jvForm" action="o_update.do" labelWidth="12">
+<input type="hidden" name="moduleType" value="${cmsScheduler.moduleType!}" />
+<@p.text colspan="1" width="50" label="cmsScheduler.name" name="name" value=cmsScheduler.name required="true" class="required" maxlength="50"/>
+<@p.td colspan="1" width="50" label="cmsScheduler.associate" required="true">
+<@p.select list=schedulerTaskList name="associateId" value=cmsScheduler.associateId listKey="id" listValue="name"/>
+</@p.td><@p.tr/>
+<@p.textarea colspan="2" label="cmsScheduler.expression" name="expression" rows="1" help="cmsScheduler.expression.help" helpPosition="3" value=cmsScheduler.expression required="true" class="required" cols="70" /><@p.tr/>
+<@p.td colspan="2">
+	<@p.hidden name="id" value=cmsScheduler.id/>
+	<@p.submit code="global.submit"/> &nbsp; <@p.reset code="global.reset"/>
+</@p.td>
+</@p.form>
+</div>
+</body>
+</html>

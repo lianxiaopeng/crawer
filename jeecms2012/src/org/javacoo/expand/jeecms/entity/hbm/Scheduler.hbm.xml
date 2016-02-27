@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.javacoo.expand.jeecms.entity">
+	<class name="Scheduler" table="crawler_scheduler">
+		<meta attribute="sync-DAO">false</meta>
+		<id name="id" type="integer" column="scheduler_id"><generator class="identity"/></id>
+		<property name="associateId" column="associate_id" type="integer" not-null="true" length="11"/>
+		<property name="moduleType" column="module_type" type="string" not-null="false" length="100"/>
+		<property name="name" column="name" type="string" not-null="false" length="100"/>
+		<property name="startTime" column="start_time" type="timestamp" not-null="false" length="19"/>
+		<property name="endTime" column="end_time" type="timestamp" not-null="false" length="19"/>
+		<property name="status" column="status" type="integer" not-null="true" length="1"/>
+		<property name="expression" column="expression" type="string" not-null="true" length="50"/>
+		<many-to-one name="site" column="site_id" class="com.jeecms.cms.entity.main.CmsSite" not-null="true"></many-to-one>
+	</class>
+</hibernate-mapping>

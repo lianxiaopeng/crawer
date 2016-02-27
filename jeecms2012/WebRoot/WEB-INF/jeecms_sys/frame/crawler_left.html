@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>jeecms-left</title>
+<#include "/jeecms_sys/head.html"/>
+<script type="text/javascript">
+$(function(){
+	Cms.lmenu('lmenu');
+});
+</script>
+</head>
+<body class="lbody">
+<div class="left">
+<#include "/jeecms_sys/date.html"/>
+     <ul class="w-lful">
+		<li><a href="crawler_right.do" target="rightFrame"><@s.m "global.admin.index"/></a></li>
+		<li><a href="../crawler/v_list.do" target="rightFrame"><@s.m "cmsAcquisition.function"/></a></li>
+		<li><a href="../crawler/v_history.do" target="rightFrame"><@s.m "cmsAcquisition.function.history"/></a></li>
+		<li><a href="../crawler/v_progress.do" target="rightFrame"><@s.m "cmsAcquisition.function.progress"/></a></li>
+		<li><a href="../scheduler/v_listBy.do?moduleType=schedulerRuleSvcImpl" target="rightFrame"><@s.m "cmsScheduler.acquisition.function"/></a></li>
+	</ul>
+</div>
+</body>
+</html>

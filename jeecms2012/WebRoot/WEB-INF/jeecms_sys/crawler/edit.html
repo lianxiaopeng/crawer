@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title></title>
+<#include "/jeecms_sys/head.html"/>
+<script type="text/javascript">
+$.validator.methods.leafChannel = function(value, element, param) {
+	var i = element.selectedIndex;
+	return $(element.options[i]).attr("class")!="sel-disabled";
+};
+$(function() {
+	$("#jvForm").validate({
+		rules: {
+			channelId: {
+				required: true,
+				leafChannel: true
+			}
+		},
+		messages:{
+			channelId: {
+				leafChannel: "<@s.m "rule.error.notLeafChannel"/>"
+			}
+		}
+	});
+});
+//点击滑动JS
+function ShowTab(theA,Small,main){
+	next=theA+1;
+	for(var i=Small;i< main;i++ ){
+		if(i==theA){
+			document.getElementById('Tab'+i).style.display='';
+			document.getElementById('Span'+i).className='choose';
+		}else if(i==Small){
+			document.getElementById('Tab'+i).style.display='none';
+			document.getElementById('Span'+i).className='begin';
+		}else if(i==next){
+			document.getElementById('Tab'+i).style.display='none';
+			document.getElementById('Span'+i).className='next';
+		}else{
+			document.getElementById('Tab'+i).style.display='none';
+			document.getElementById('Span'+i).className='';	
+		}		
+	}
+}
+</script>
+<style type="text/css">
+.sel-disabled{background-color:#ccc}
+.ParamTab{}
+.border{border:1px solid #E8E8E8;}
+.ParamTab .head div{
+	width:80px;
+	height:28px;
+	border-top:#DBDBDB solid 1px;
+	border-right:#DBDBDB solid 1px;
+	float:left;
+	text-align:center;
+	background:url(out1.gif) left -1px repeat-x;
+	overflow:hidden;
+	line-height:30px;
+	cursor:pointer;
+	color:#666666;	
+}
+.ParamTab .head{
+	padding-top:5px;
+	overflow:hidden;
+	background:url(../img/head_new.gif) repeat-x;
+}
+.ParamTab .cont{
+	overflow:hidden;
+	padding-top:3px;
+	padding-left:2px;
+}
+.ParamTab .cont div{
+	margin:auto;
+}
+.ParamTab .head a{
+	color:#2143DC;
+}
+.ParamTab .head .tag{
+	float:left;
+	line-height:20px;
+	padding:0 50px 0 20px;
+	font-size:14px;
+	font-weight:bold;
+}
+#Span1{
+	border-left:#DBDBDB solid 1px;
+}
+.ParamTab .head div.choose{
+	background:#FFF;
+	color:#2143DC;
+}
+</style>
+</head>
+<body>
+<div class="body-box">
+<div class="box-positon">
+	<div class="rpos"><@s.m "global.position"/>:  <@s.m "rule.function"/> - <@s.m "global.edit"/></div>
+	<form class="ropt">
+		<input type="button" class="return-button" value="<@s.m "global.backToList"/>" onclick="history.back();"/>
+	</form>
+	<div class="clear"></div>
+</div>
+<@p.crawler_form id="jvForm" action="o_update.do" labelWidth="12" >
+<div class="ParamTab border box-positon" style="height:500px">
+	<div class="head" style="height:29px">
+		<span class="tag" style="width: 220px; padding: 0 1px 0 10px;"><@p.hidden name="id" value=rule.id/>
+	<@p.submit code="global.submit"/> &nbsp; <@p.reset code="global.reset"/>&nbsp;<@s.m "rule.tabpanel.title"/></span>
+		<div class="choose" style="width: 120px;" onclick="ShowTab(1,1,6)" id="Span1">
+			<@s.m "rule.tabpanel.base"/>
+		</div>
+		<div class="next" style="width: 120px;" onclick="ShowTab(2,1,6)" id="Span2">
+			<@s.m "rule.tabpanel.content"/>
+		</div>
+		<div class="next" style="width: 120px;" onclick="ShowTab(3,1,6)" id="Span3">
+			<@s.m "rule.tabpanel.contentpage"/>
+		</div>
+		<div class="next" style="width: 120px;" onclick="ShowTab(4,1,6)" id="Span4">
+			<@s.m "rule.tabpanel.comment"/>
+		</div>
+		<div class="next" style="width: 120px;" onclick="ShowTab(5,1,6)" id="Span5">
+			<@s.m "rule.tabpanel.field"/>
+		</div>
+	</div>
+	<!-- 基本属性 -->
+	<div class="cont" id="Tab1">
+	    <table class="pn-ftable" cellspacing="1" cellpadding="2" border="0" width="100%">
+		    <tr>
+		       <@p.text colspan="1" width="50" label="rule.name" name="name" value=rule.name required="true" class="required" maxlength="50"/>
+				<@p.td colspan="1" width="50" label="rule.info" required="true">
+				<@s.m "rule.type"/>: <@p.select list=typeList name="typeId" value=rule.type.id listKey="id" listValue="name"/>
+				&nbsp; <@s.m "rule.channel"/>: <select name="channelId">
+				<#if !channel??>
+					<option value="" class="sel-disabled"><@s.m "global.pleaseSelect"/></option>
+				</#if>
+				<#if channelList?size gt 0>
+				<#assign origDeep=channelList[0].deep+1/>
+				<#list channelList as c>
+					<#if c.hasContent || c.child?size gt 0>
+					<option value="${c.id}"<#if c.id==rule.channel.id> selected="selected"</#if><#if c.child?size gt 0> class="sel-disabled"</#if>><#if c.deep gte origDeep><#list origDeep..c.deep as i>&nbsp;&nbsp;</#list>></#if>${c.name}</option>
+					</#if>
+				</#list>
+				</#if>
+				</select> <span class="pn-fhelp"><@s.m "rule.channel.help"/></span>
+				</@p.td><@p.tr/>
+				<@p.text colspan="1" width="50" label="rule.pageEncoding" name="pageEncoding" value=rule.pageEncoding required="true" class="required" maxlength="20" help="rule.pageEncoding.help"/>
+				<@p.text colspan="1" width="50" label="rule.pauseTime" name="pauseTime" value=rule.pauseTime style="width:50px" required="true" class="required" maxlength="10" help="rule.pauseTime.help"/><@p.tr/>
+				
+				<@p.td colspan="1" width="50" label="rule.extractContentRes">
+				<input type="radio" value="true" <#if rule.titleStart == "true"> checked</#if> name="titleStart" style=""><@s.m "rule.radio.yes"/>
+				<input type="radio" value="false" <#if rule.titleStart == "false"> checked</#if> name="titleStart" style=""><@s.m "rule.radio.no"/></br>
+				<span class="pn-fhelp"><@s.m "rule.extractContentRes.help"/></span>
+				</@p.td>
+				<@p.td colspan="1" width="50" label="rule.replaceHtmlLink">
+				<input type="radio" value="true" <#if rule.titleEnd == "true"> checked</#if> name="titleEnd" style=""><@s.m "rule.radio.yes"/>
+				<input type="radio" value="false" <#if rule.titleEnd == "false"> checked</#if> name="titleEnd" style=""><@s.m "rule.radio.no"/>
+				<span class="pn-fhelp"><@s.m "rule.replaceHtmlLink.help"/></span>
+				</@p.td>
+				<@p.tr/>
+				
+				
+				<@p.td colspan="1" width="50" label="rule.repeatCheckType">
+				<input type="radio" value="true" name="repeatCheckType" <#if rule.repeatCheckType == "true"> checked</#if> style=""><@s.m "rule.radio.yes"/>
+				<input type="radio" value="false" name="repeatCheckType" <#if rule.repeatCheckType == "false"> checked</#if> style=""><@s.m "rule.radio.no"/></br>
+				<span class="pn-fhelp"><@s.m "rule.repeatCheckType.help"/></span>
+				</@p.td>
+				<@p.td colspan="1" width="50" label="rule.useProxy">
+				<input type="radio" value="true" name="useProxy" <#if rule.useProxy == "true"> checked</#if> style=""><@s.m "rule.radio.yes"/>
+				<input type="radio" value="false" name="useProxy" <#if rule.useProxy == "false"> checked</#if> style=""><@s.m "rule.radio.no"/>
+				<span class="pn-fhelp"><@s.m "rule.useProxy.help"/></span>
+				</@p.td>
+				<@p.tr/>
+				
+				<@p.td colspan="2" label="rule.proxy">
+				<table border="0" width="100%">
+				<tr>
+				<td><@s.m "rule.proxy.address"/>：<input type="text" name="proxyAddress" value="${rule.proxyAddress!}"  style="width:200px" maxlength="100"/><@s.m "rule.proxy.port"/>：<input type="text" name="proxyPort" value="${rule.proxyPort!}" style="width:50px" maxlength="10"/></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+				
+				<@p.td colspan="2" label="content.topicIds">
+				<table border="0" width="100%">
+				<tr>
+				<td width="100%">
+				<div style="float:left;padding-left:7px;<#if topicList?size == 0>display:none</#if>">
+				&nbsp;<span id="topics"><@p.checkboxlist valueList=topicIds list=topicList listKey="id" listValue="sname" name="topicIds"/></span>
+				</div>
+				<div style="clear:both"></div>
+				</td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+				
+				<@p.textarea colspan="2" label="rule.replaceWords" name="replaceWords" value=rule.replaceWords rows="3" cols="70" help="rule.replaceWords.help" helpPosition="3"/><@p.tr/>
+		    </tr>
+	    </table>
+	</div>
+	<!-- 内容属性 -->
+	<div style="display: none;" class="cont" id="Tab2">
+	 	<table class="pn-ftable" cellspacing="1" cellpadding="2" border="0" width="100%">
+		    <tr>
+		    	<@p.textarea colspan="2" label="rule.planList" name="planList" value=rule.planList rows="2" cols="70" help="rule.planList.help" helpPosition="3"/><@p.tr/>
+				<@p.td colspan="2" label="rule.dynamicAddr">
+				<div><input type="text" name="dynamicAddr" value="${rule.dynamicAddr}" style="width:450px" maxlength="255"/> <span class="pn-fhelp"><@s.m "rule.dynamicAddr.help"/></span></div>
+				<div><@s.m "rule.dynamicPage"/> <@s.m "rule.from"/> <input type="text" name="dynamicStart" value="${rule.dynamicStart!}" size="7"/> &nbsp; <@s.m "rule.to"/>: <input type="text" name="dynamicEnd" value="${rule.dynamicEnd!}" size="7"/></div> 
+				</@p.td><@p.tr/>
+				<@p.td colspan="2" label="rule.linkset">
+				<table border="0" width="100%">
+				<tr>
+				<td align="center" width="50%"><@s.m "rule.start"/></td>
+				<td align="center" width="50%"><@s.m "rule.end"/></td>
+				</tr>
+				<tr>
+				<td align="center" width="50%"><textarea name="linksetStart" rows="2" style="width:85%">${rule.linksetStart!}</textarea></td>
+				<td align="center" width="50%"><textarea name="linksetEnd" rows="2" style="width:85%">${rule.linksetEnd!}</textarea></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+				<@p.td colspan="2" label="rule.description">
+				<table border="0" width="100%">
+				<tr>
+				<td align="center" width="50%"><textarea name="descriptionStart" rows="2" style="width:85%">${rule.descriptionStart!}</textarea></td>
+				<td align="center" width="50%"><textarea name="descriptionEnd" rows="2" style="width:85%">${rule.descriptionEnd!}</textarea></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+				
+				<@p.td colspan="2" label="rule.content">
+				<table border="0" width="100%">
+				<tr>
+				<td align="center" width="50%"><textarea name="contentStart" rows="2" style="width:85%">${rule.contentStart!}</textarea></td>
+				<td align="center" width="50%"><textarea name="contentEnd" rows="2" style="width:85%">${rule.contentEnd!}</textarea></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+		    </tr>
+	    </table>
+	</div>
+	<!-- 内容分页属性 -->
+	<div style="display: none;" class="cont" id="Tab3">
+	 	<table class="pn-ftable" cellspacing="1" cellpadding="2" border="0" width="100%">
+		    <tr>
+		      <@p.td colspan="2" label="rule.pagelinkarea">
+				<table border="0" width="100%">
+				<tr>
+				<td align="center" width="50%"><@s.m "rule.start"/></td>
+				<td align="center" width="50%"><@s.m "rule.end"/></td>
+				</tr>
+				<tr>
+				<td align="center" width="50%"><textarea name="paginationStart" rows="2" style="width:85%">${rule.paginationStart!}</textarea></td>
+				<td align="center" width="50%"><textarea name="paginationEnd" rows="2" style="width:85%">${rule.paginationEnd!}</textarea></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+				
+			 </tr>
+	    </table>
+	</div>
+	<!-- 评论属性 -->
+	<div style="display: none;" class="cont" id="Tab4">
+	 	<table class="pn-ftable" cellspacing="1" cellpadding="2" border="0" width="100%">
+		    <tr>
+		        <@p.td colspan="2" label="rule.commentIndex">
+				<table border="0" width="100%">
+				<tr>
+				<td align="center" width="50%"><@s.m "rule.start"/></td>
+				<td align="center" width="50%"><@s.m "rule.end"/></td>
+				</tr>
+				<tr>
+				<td align="center" width="50%"><textarea name="commentIndexStart" rows="2" style="width:85%">${rule.commentIndexStart!}</textarea></td>
+				<td align="center" width="50%"><textarea name="commentIndexEnd" rows="2" style="width:85%">${rule.commentIndexEnd!}</textarea></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+				<@p.td colspan="2" label="rule.commentArea">
+				<table border="0" width="100%">
+				<tr>
+				<td align="center" width="50%"><textarea name="commentAreaStart" rows="2" style="width:85%">${rule.commentAreaStart!}</textarea></td>
+				<td align="center" width="50%"><textarea name="commentAreaEnd" rows="2" style="width:85%">${rule.commentAreaEnd!}</textarea></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+				<@p.td colspan="2" label="rule.comment">
+				<table border="0" width="100%">
+				<tr>
+				<td align="center" width="50%"><textarea name="commentStart" rows="2" style="width:85%">${rule.commentStart!}</textarea></td>
+				<td align="center" width="50%"><textarea name="commentEnd" rows="2" style="width:85%">${rule.commentEnd!}</textarea></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+				<@p.td colspan="2" label="rule.commentLink">
+				<table border="0" width="100%">
+				<tr>
+				<td align="center" width="50%"><textarea name="commentLinkStart" rows="2" style="width:85%">${rule.commentLinkStart!}</textarea></td>
+				<td align="center" width="50%"><textarea name="commentLinkEnd" rows="2" style="width:85%">${rule.commentLinkEnd!}</textarea></td>
+				</tr>
+				</table>
+				</@p.td><@p.tr/>
+		    </tr>
+	    </table>
+	</div>
+	<!-- 扩展字段集 -->
+	<div style="display: none;" class="cont" id="Tab5">
+	 	<table class="pn-ftable" cellspacing="1" cellpadding="2" border="0" width="100%">
+		    <tr>
+		    	<@p.td label="rule.fields" colspan="2" >
+				<div><input type="button" class="add" onclick="addPicLine();" value="<@s.m "rule.fields.add"/>"/><@s.m "rule.fields.help"/></div>
+				<table border="0" width="100%">
+					<tr id="picBefore">
+						<td align="center" width="25%"><@s.m "rule.fields.name"/></td>
+						<td align="center" width="25%"><@s.m "rule.start"/></td>
+						<td align="center" width="25%"><@s.m "rule.end"/></td>
+						<td align="center" width="25%"><@s.m "rule.fields.opt"/></td>
+					</tr>
+					<#if rule.keywordsStart?? && rule.keywordsStart?string!="">
+				        <script type="text/javascript">
+				        		$(function() {
+				        		    var picIndex = 0;
+									var picTpl = $.format($("#picTable").val());
+				        			var fieldList = eval(${rule.keywordsStart});
+				        			for(var i=0,len=fieldList.length;i<len;i++) {
+				        			   $('#picBefore').after(picTpl(picIndex++,fieldList[i].fields,fieldList[i].filterStart,fieldList[i].filterEnd));
+									} 
+				        		}); 		
+				        </script>
+				   <#else>
+					   <tr id="picTable0">
+								<td width="25%">
+									<input type="text" id="fields0" name="fields" style="width:100px"/> 
+								</td>
+								<td width="25%">
+									<textarea style="width:200px;height:60px;" id="filterStart0" name="filterStart" maxlength="255"></textarea>
+								</td>
+								<td width="25%">
+									<textarea style="width:200px;height:60px;" id="filterEnd0" name="filterEnd" maxlength="255"></textarea>
+								</td>
+								<td width="25%">
+								<a href="javascript:void(0);" onclick="$('#picTable0').remove();" class="pn-opt"><@s.m "content.picturesDel"/></a>
+								</td>
+						</tr>
+				   </#if>
+					
+				</table>
+				</@p.td><@p.tr/>
+				<textarea id="picTable" style="display:none;">
+				<tr id="picTable{0}">
+					<td align="center" width="25%">
+						<input align="center" type="text" id="fields{0}" name="fields" value="{1}" style="width:100px"/> 
+					</td>
+					<td align="center" width="25%">
+						&lt;textarea style="width:200px;height:60px;" id="filterStart{0}"  name="filterStart" maxlength="255"&gt;{2}&lt;/textarea&gt;
+					</td>
+					<td align="center" width="25%">
+						&lt;textarea style="width:200px;height:60px;" id="filterEnd{0}"  name="filterEnd" maxlength="255"&gt;{3}&lt;/textarea&gt;
+					</td>
+					<td align="center" width="25%">
+						<a href="javascript:void(0);" onclick="$('#picTable{0}').remove();" class="pn-opt"><@s.m "content.picturesDel"/></a>
+					</td>
+				</tr>
+				</textarea>
+				<script type="text/javascript">
+				var picIndex = 1;
+				<#if rule.keywordsStart?? && rule.keywordsStart?string!="">
+				    var fieldList = eval(${rule.keywordsStart});
+				    picIndex = fieldList.length + 1;
+				</#if>
+				
+				var picTpl = $.format($("#picTable").val());
+				function addPicLine() {
+					$('#picBefore').after(picTpl(picIndex++,"","",""));
+				}
+				</script>
+		    </tr>
+	    </table>
+	</div>
+</div>
+<script language="JavaScript">ShowTab(1,1,6);</script>
+</@p.crawler_form>
+</div>
+</body>
+</html>
